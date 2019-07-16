@@ -18,71 +18,71 @@ public class MemberController {
     private MemberService memberService;
 
     /**
-     * 显示所有Member，请求url:"http://xxx/member/findall"
+     * 显示所有Member，请求url:"http://xxx/member/v1/findall"
      *
      * @return List
      */
-    @RequestMapping(value = "/findall")
+    @RequestMapping(value = "/v1/findall")
     public List<Member> findAllMember() {
         return memberService.findAllMember();
     }
 
 
     /**
-     * 查找id对应的Member信息，请求url:"http://xxx/member/findone/1"
+     * 查找id对应的Member信息，请求url:"http://xxx/member/v1/findone/1"
      *
      * @param id
      * @return Member
      */
 
-    // == @RequestMapping(value = "/findone/{id}", method = RequestMethod.GET)
-    @GetMapping("/findone/{id}")
-    public Member findMemberRestful(@PathVariable("id") Integer id) {
+    // == @RequestMapping(value = "/v1/findone/{id}", method = RequestMethod.GET)
+    @GetMapping("/v1/findone/{id}")
+    public Member findMember(@PathVariable("id") Integer id) {
         return memberService.findMember(id);
     }
 
 
     /**
-     * 删除id对应的Member，请求url:"http://xxx/member/deleteone/4"
+     * 删除id对应的Member，请求url:"http://xxx/member/v1/deleteone/4"
      * 可以通过 jquery的 $.ajax者postman方法，并type="delete"
      *
      * @param id
      *
      * @return void
      */
-    // == @RequestMapping(value = "/deleteone/{id}", method = RequestMethod.DELETE)
-    @DeleteMapping("/deleteone/{id}")
-    public void deleteStudentRestful(@PathVariable("id") Integer id) {
+    // == @RequestMapping(value = "/v1/deleteone/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/v1/deleteone/{id}")
+    public void deleteMember(@PathVariable("id") Integer id) {
         memberService.deleteMember(id);
     }
 
 
     /**
-     * 增加member信息，请求url:"http://localhost/member/addone"
+     * 增加member信息，请求url:"http://xxx/member/v1/addone"
      * 数据通过<form>表单者postman模拟验证
      *
      * @param member
      *
      * @return void
      */
-    // == @RequestMapping(value="/addone",method=RequestMethod.POST)
-    @PostMapping("/addone")
-    public void addStudentRestful(Member member) {
+    // == @RequestMapping(value="/v1/addone",method=RequestMethod.POST)
+    @PostMapping("/v1/addone")
+    public void addMember(Member member) {
         memberService.addMember(member);
     }
 
 
     /**
-     * 修改对应的Member，请求url:"http://localhost/member/updateone"
+     * 修改对应的Member，请求url:"http://xxx/member/v1/updateone"
      * 验证：可以通过 jquery的 $.ajax方法或者postman，并type="put",同时注意data形式——A=a&B=b&C=c
      *
      * @param member
      *
      * @return void
      */
-    // == @RequestMapping(value="/addone",method=RequestMethod.PUT)
-    @PutMapping("/updateone")
-    public void updateStudentRestful(Member member) {
+    // == @RequestMapping(value="/v1/addone",method=RequestMethod.PUT)
+    @PutMapping("/v1/updateone")
+    public void updateMember(Member member) {
         memberService.updateMember(member);
     }
 }

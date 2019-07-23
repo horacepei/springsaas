@@ -10,6 +10,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import sun.rmi.server.InactiveGroupException;
 
 @ControllerAdvice
 public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
@@ -51,7 +52,10 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
         if(body == null){
             if (isJsonResponse(mediaType)) {
                 //返回是json个格式类型，无body内容
-                return WsResponse.success();
+                Object data = new String();
+                Object message = new String();
+                RestReturn restReturn = new RestReturn();
+                return restReturn.success(data, message);
             } else {
                 return null;
             }
@@ -67,7 +71,7 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
                 // 如果 API返回的是 String，
                 try {
                     if (WsResponse.isWsResponseJson((String) body)) {
-                        // 情况3.1 已经是RestReturn格式的 字符串不做统一格式封装
+                        // 情况4 已经是RestReturn格式的 字符串不做统一格式封装
                         return body;
                     } else {
                         if (isJsonResponse(mediaType)) {

@@ -1,5 +1,6 @@
 package com.springboot.action.saas.common.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 import java.time.Instant;
@@ -23,6 +24,7 @@ public class RestReturn {
      *构造函数（无参数）
      */
     public RestReturn() {
+        //毫秒
         this.currentTime = Instant.now().toEpochMilli();
     }
     /**
@@ -33,6 +35,7 @@ public class RestReturn {
         this.code = code;
         this.data = data;
         this.message = message;
+        //毫秒
         this.currentTime = Instant.now().toEpochMilli();
     }
     @Override
@@ -62,6 +65,21 @@ public class RestReturn {
         this.message = message;
 
         return this;
+    }
+
+    public boolean isRestReturnJson(String data) {
+        //临时实现先判定下字符串的格式和字段
+        try {
+            /**
+             * ObjectMapper支持从byte[]、File、InputStream、字符串等数据的JSON反序列化。
+             */
+            ObjectMapper mapper = new ObjectMapper();
+            RestReturn dataRestReturn = mapper.readValue(data, RestReturn.class);
+            //比较两个类的字段,如果一致返回为真，不一致返回为假
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
 

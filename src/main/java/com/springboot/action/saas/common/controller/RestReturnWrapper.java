@@ -48,64 +48,57 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
                     ServerHttpRequest serverHttpRequest,
                     ServerHttpResponse serverHttpResponse) {
         //具体返回值处理
-        //情况1 如果为null
+        //情况1 如果返回的body为null
         if(body == null){
-            if (isJsonResponse(mediaType)) {
+            if (mediaType == MediaType.APPLICATION_JSON) {
                 //返回是json个格式类型，无body内容
-                Object data = new String();
-                Object message = new String();
                 RestReturn restReturn = new RestReturn();
-                return restReturn.success(data, message);
+                return restReturn.success("", "");
             } else {
                 return null;
             }
-        }else {
-            //情况2 文件上传下载，不需要封装，直接返回
+        } else {
+            //情况2 文件上传下载，不需要改动，直接返回
             if (body instanceof Resource) {
                 return body;
             } else if (body instanceof String) {
-                // 情况3 理论上只要API 返回值是 String / byte[]等
+                // 理论上只要API 返回值是 String / byte[]等
                 // 不会由MappingJackson2HttpMessageConverter处理的返回值
                 // 都有可能出错，抛出ClassCastException...
                 // 目前API 出现的比较多的是String，所以只处理String情况
                 // 如果 API返回的是 String，
+                RestReturn restReturn = new RestReturn();
                 try {
-                    if (WsResponse.isWsResponseJson((String) body)) {
-                        // 情况4 已经是RestReturn格式的 字符串不做统一格式封装
+                    if (restReturn.isRestReturnJson((String) body)) {
+                        // 情况3 已经是RestReturn格式的json 字符串不做统一格式封装
                         return body;
                     } else {
-                        if (isJsonResponse(mediaType)) {
-                            // 如果 produces = application/json格式时，
-                            // String返回值 将被StringHttpMessageConvertor处理，
-                            // 所以此时应该返回字符串
-                            return mapper.writeValueAsString(WsResponse.success(body));
-                        } else {
-                            // 如果 produces = text/html时，
-                            // String返回值 将被StringHttpMessageConverter处理，
-                            // 所以此时应该返回WsResponse的json序列化后的字符串
-                            // 如果此时还是返回WsResponse对象，会抛出ClassCastException
-                            // 因为StringHttpMessageConverter会把WsResponse对象当做String处理
-                            return mapper.writeValueAsString(WsResponse.success(body));
-                        }
+                        //情况4 普通的返回，需要统一格式，把数据赋值回去即可。
+                        return restReturn.success(body, "");
                     }
-                } catch (JsonProcessingException e) {
-                    // 因为 API返回值为String，
-                    // 所以不会抛异常，理论上不会走到这个分支
-                    return body;
+                } catch (Exception e) {
+                    // 因为 API返回值为String，理论上不会走到这个分支。
+                    return restReturn.error("-1", body, e.getMessage());
                 }
             } else {
-                //处理body为非字符串格式
+                //处理body为非字符串格式，实际上很多时候用都是是在应用程返回的对象居多
                 if(body instanceof RestReturn){
-                    //如果已经封装成RestReturn,直接return
+                    //情况4 如果已经封装成RestReturn,直接return
                     return body;
                 }else{
-                    //封装成RestReturn
-                    return new RestReturn(body);
+                    //情况5 普通的返回，需要统一格式
+                    RestReturn restReturn = (RestReturn)body;
+                    boolean success = false;
+                    if (restReturn.getCode().equals("0")) {
+                        success = true;
+                    }
+                    return new RestReturn(success,
+                            restReturn.getCode(),
+                            restReturn.getData(),
+                            restReturn.getMessage());
                 }
             }
         }
-        RestReturn result = new RestReturn(true, "0", body, null);
-        return result;
     }
 
 }

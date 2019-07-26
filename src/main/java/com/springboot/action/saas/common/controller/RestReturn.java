@@ -13,7 +13,7 @@ public class RestReturn {
     //是否成功标志
     private boolean success;
     //code错误码
-    private String code;
+    private Integer code;
     //外带数据信息
     private Object data;
     //前端进行页面展示的信息
@@ -30,7 +30,7 @@ public class RestReturn {
     /**
      *构造函数（有参数）
      */
-    public RestReturn(boolean success, String code, Object data, Object message) {
+    public RestReturn(boolean success, Integer code, Object data, Object message) {
         this.success = success;
         this.code = code;
         this.data = data;
@@ -51,14 +51,14 @@ public class RestReturn {
 
     public RestReturn success(Object data, Object message) {
         this.success = true;
-        this.code = "0";
+        this.code = 0;
         this.data = data;
         this.message = message;
 
         return this;
     }
 
-    public RestReturn error(String code, Object data, Object message) {
+    public RestReturn error(Integer code, Object data, Object message) {
         this.success = false;
         this.code = code;
         this.data = data;

@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 /*
-*  restful 风格接口
-* */
+ *  restful 风格接口
+ * */
 //@RestController 代替 @Controller,省略以后的 @ResponseBody
 @RestController
 //处理请求地址映射的注解，可用于类或方法上。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。
@@ -26,7 +27,6 @@ public class MemberController {
     public List<Member> findAllMember() {
         return memberService.findAllMember();
     }
-
 
     /**
      * 查找id对应的Member信息，请求url:"http://xxx/member/v1/findone/1"
@@ -47,7 +47,6 @@ public class MemberController {
      * 可以通过 jquery的 $.ajax者postman方法，并type="delete"
      *
      * @param id
-     *
      * @return void
      */
     // == @RequestMapping(value = "/v1/deleteone/{id}", method = RequestMethod.DELETE)
@@ -62,7 +61,6 @@ public class MemberController {
      * 数据通过<form>表单者postman模拟验证
      *
      * @param member
-     *
      * @return void
      */
     // == @RequestMapping(value="/v1/addone",method=RequestMethod.POST)
@@ -77,7 +75,6 @@ public class MemberController {
      * 验证：可以通过 jquery的 $.ajax方法或者postman，并type="put",同时注意data形式——A=a&B=b&C=c
      *
      * @param member
-     *
      * @return void
      */
     // == @RequestMapping(value="/v1/addone",method=RequestMethod.PUT)

@@ -1,16 +1,13 @@
 package com.springboot.action.saas.common.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import sun.rmi.server.InactiveGroupException;
 
 @ControllerAdvice
 public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
@@ -62,11 +59,7 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
             if (body instanceof Resource) {
                 return body;
             } else if (body instanceof String) {
-                // 理论上只要API 返回值是 String / byte[]等
-                // 不会由MappingJackson2HttpMessageConverter处理的返回值
-                // 都有可能出错，抛出ClassCastException...
-                // 目前API 出现的比较多的是String，所以只处理String情况
-                // 如果 API返回的是 String，
+                // 返回的是 String，
                 RestReturn restReturn = new RestReturn();
                 try {
                     if (restReturn.isRestReturnJson((String) body)) {
@@ -78,24 +71,17 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
                     }
                 } catch (Exception e) {
                     // 因为 API返回值为String，理论上不会走到这个分支。
-                    return restReturn.error("-1", body, e.getMessage());
+                    return restReturn.error(10000, body, e.getMessage());
                 }
             } else {
-                //处理body为非字符串格式，实际上很多时候用都是是在应用程返回的对象居多
+                //返回的是非字符串格式，实际上很多时候用都是是在应用程返回的对象居多
                 if(body instanceof RestReturn){
-                    //情况4 如果已经封装成RestReturn,直接return
+                    //情况5 如果已经封装成RestReturn,直接return
                     return body;
                 }else{
-                    //情况5 普通的返回，需要统一格式
-                    RestReturn restReturn = (RestReturn)body;
-                    boolean success = false;
-                    if (restReturn.getCode().equals("0")) {
-                        success = true;
-                    }
-                    return new RestReturn(success,
-                            restReturn.getCode(),
-                            restReturn.getData(),
-                            restReturn.getMessage());
+                    //情况6 非字符串非统一格式的返回，需要统一格式
+                    RestReturn restReturn = new RestReturn();
+                    return restReturn.success(body, "");
                 }
             }
         }

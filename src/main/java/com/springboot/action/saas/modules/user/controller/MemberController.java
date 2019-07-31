@@ -1,5 +1,6 @@
 package com.springboot.action.saas.modules.user.controller;
 
+import com.springboot.action.saas.common.logging.annotation.Log;
 import com.springboot.action.saas.modules.user.po.Member;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class MemberController {
      *
      * @return List
      */
+    @Log("获取全部用户列表")
     @RequestMapping(value = "/v1/findall")
     public List<Member> findAllMember() {
         return memberService.findAllMember();

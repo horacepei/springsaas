@@ -1,7 +1,7 @@
 package com.springboot.action.saas.modules.user.service.impl;
 
-import com.springboot.action.saas.modules.user.dao.MemberDao;
-import com.springboot.action.saas.modules.user.po.Member;
+import com.springboot.action.saas.modules.user.repository.MemberDao;
+import com.springboot.action.saas.modules.user.domain.Member;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
-package com.springboot.action.saas.modules.user.dao;
+package com.springboot.action.saas.modules.user.repository;
 
-import com.springboot.action.saas.modules.user.po.Member;
+import com.springboot.action.saas.modules.user.domain.Member;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.springboot.action.saas.modules.user.controller;
 
 import com.springboot.action.saas.common.logging.annotation.Log;
-import com.springboot.action.saas.modules.user.po.Member;
+import com.springboot.action.saas.modules.user.domain.Member;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

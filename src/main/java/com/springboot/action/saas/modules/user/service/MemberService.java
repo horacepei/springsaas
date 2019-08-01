@@ -1,6 +1,6 @@
 package com.springboot.action.saas.modules.user.service;
 
-import com.springboot.action.saas.modules.user.po.Member;
+import com.springboot.action.saas.modules.user.domain.Member;
 
 import java.util.List;
 /*

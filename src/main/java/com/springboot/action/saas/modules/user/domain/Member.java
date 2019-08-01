@@ -1,4 +1,4 @@
-package com.springboot.action.saas.modules.user.po;
+package com.springboot.action.saas.modules.user.domain;
 
 import lombok.Data;
 /*

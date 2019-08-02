@@ -1,10 +1,12 @@
 package com.springboot.action.saas.common.logging.service.impl;
 
 import com.springboot.action.saas.common.logging.domain.Log;
+import com.springboot.action.saas.common.logging.repository.LogRepository;
 import com.springboot.action.saas.common.logging.service.LogService;
 import com.springboot.action.saas.common.utils.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -14,6 +16,10 @@ import java.lang.reflect.Method;
 
 @Service
 public class LogServiceImpl implements LogService {
+    //数据操作类，相当于DAO
+    @Autowired
+    private LogRepository logRepository;
+
     /*
     * 记录日志接口实现
     **/
@@ -50,8 +56,10 @@ public class LogServiceImpl implements LogService {
         log.setParams(params + " }");
         //获取IP地址
         log.setRequestIp(StringUtils.getIP(request));
-        //输出下日志到控制台
+        //输出日志到控制台
         System.out.println(log.toString());
+        //日志记录到数据库
+        logRepository.save(log);
     }
 
 }

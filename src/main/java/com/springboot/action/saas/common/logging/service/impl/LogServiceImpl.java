@@ -33,7 +33,9 @@ public class LogServiceImpl implements LogService {
         //获取抽象类（代理对象）方法
         Method method = signature.getMethod();
         //返回该元素的指定类型的注释，这里是Log注解
-        com.springboot.action.saas.common.logging.annotation.Log aopLog = method.getAnnotation(com.springboot.action.saas.common.logging.annotation.Log.class);
+        com.springboot.action.saas.common.logging.annotation.Log aopLog = method.getAnnotation(
+                com.springboot.action.saas.common.logging.annotation.Log.class
+        );
         //获取注解传递的参数
         if (log != null) {
             log.setDescription(aopLog.value());

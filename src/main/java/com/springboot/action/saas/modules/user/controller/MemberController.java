@@ -1,9 +1,10 @@
 package com.springboot.action.saas.modules.user.controller;
 
 import com.springboot.action.saas.common.logging.annotation.Log;
-import com.springboot.action.saas.modules.user.domain.Member;
+import com.springboot.action.saas.modules.user.domain.UserMember;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,68 +21,68 @@ public class MemberController {
     private MemberService memberService;
 
     /**
-     * 显示所有Member，请求url:"http://xxx/member/v1/findall"
+     * 显示所有Member，请求url:"http://xxx/member/v1/findAll"
      *
      * @return List
      */
     @Log("获取全部用户列表")
-    @RequestMapping(value = "/v1/findall")
-    public List<Member> findAllMember() {
+    @RequestMapping(value = "/v1/findAll")
+    public List<UserMember> findAllMember() {
         return memberService.findAllMember();
     }
 
     /**
-     * 查找id对应的Member信息，请求url:"http://xxx/member/v1/findone/1"
+     * 查找id对应的Member信息，请求url:"http://xxx/member/v1/findById/1"
      *
      * @param id
      * @return Member
      */
 
-    // == @RequestMapping(value = "/v1/findone/{id}", method = RequestMethod.GET)
-    @GetMapping("/v1/findone/{id}")
-    public Member findMember(@PathVariable("id") Integer id) {
-        return memberService.findMember(id);
+    // == @RequestMapping(value = "/v1/findById/{id}", method = RequestMethod.GET)
+    @GetMapping("/v1/findById/{id}")
+    public UserMember findById(@PathVariable("id") Integer id) {
+        return memberService.findMemberById(id);
     }
 
-
     /**
-     * 删除id对应的Member，请求url:"http://xxx/member/v1/deleteone/4"
-     * 可以通过 jquery的 $.ajax者postman方法，并type="delete"
+     * 查找id对应的Member信息，请求url:"http://xxx/member/v1/findByName/1"
      *
-     * @param id
-     * @return void
+     * @param name
+     * @return Member
      */
-    // == @RequestMapping(value = "/v1/deleteone/{id}", method = RequestMethod.DELETE)
-    @DeleteMapping("/v1/deleteone/{id}")
-    public void deleteMember(@PathVariable("id") Integer id) {
-        memberService.deleteMember(id);
+
+    // == @RequestMapping(value = "/v1/findByName/{name}", method = RequestMethod.GET)
+    @GetMapping("/v1/findByName/{name}")
+    public UserMember findByName(@PathVariable("name") String name) {
+        return memberService.findMemberByName(name);
     }
 
-
     /**
-     * 增加member信息，请求url:"http://xxx/member/v1/addone"
+     * 增加member信息，请求url:"http://xxx/member/v1/add"
      * 数据通过<form>表单者postman模拟验证
      *
      * @param member
      * @return void
      */
-    // == @RequestMapping(value="/v1/addone",method=RequestMethod.POST)
-    @PostMapping("/v1/addone")
-    public void addMember(Member member) {
+    // == @RequestMapping(value="/v1/add", method = RequestMethod.POST)
+    @Log("增加用户")
+    @PostMapping("/v1/add")
+    public void addMember(@Validated @RequestBody UserMember member) {
+        System.out.println(member);
         memberService.addMember(member);
     }
 
 
     /**
-     * 修改对应的Member，请求url:"http://xxx/member/v1/updateone"
+     * 修改对应的Member，请求url:"http://xxx/member/v1/update"
      * 验证：可以通过 jquery的 $.ajax方法或者postman，并type="put",同时注意data形式——A=a&B=b&C=c
      *
      * @param member
      * @return void
      */
-    // == @RequestMapping(value="/v1/addone",method=RequestMethod.PUT)
-    @PutMapping("/v1/updateone")
-    public void updateMember(Member member) {
+    // == @RequestMapping(value="/v1/update", method = RequestMethod.PUT)
+    @PutMapping("/v1/update")
+    public void updateMember(@Validated @RequestBody UserMember member) {
         memberService.updateMember(member);
     }
 }

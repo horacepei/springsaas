@@ -1,7 +1,7 @@
 package com.springboot.action.saas.modules.user.service.impl;
 
-import com.springboot.action.saas.modules.user.repository.MemberDao;
-import com.springboot.action.saas.modules.user.domain.Member;
+import com.springboot.action.saas.modules.user.domain.UserMember;
+import com.springboot.action.saas.modules.user.repository.UserMemberRepository;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,29 +14,39 @@ import java.util.List;
 @Service
 public class MemberServiceImpl implements MemberService {
     @Autowired
-    private MemberDao memberDao;
+    private UserMemberRepository userMemberRepository;
     @Override
-    public void addMember(Member member) {
-        memberDao.add(member);
+    public Long addMember(UserMember member) {
+        //检查用户名是否已经存在
+        if(userMemberRepository.findByName(member.getName()) != null){
+            //走存在处理分支
+            return -1L;
+        }
+        //加密密码
+        //加入到数据库
+        userMemberRepository.saveAndFlush(member);
+        return member.getId();
     }
 
     @Override
-    public void deleteMember(Integer id) {
-        memberDao.delete(id);
+    public void updateMember(UserMember member) {
+        userMemberRepository.saveAndFlush(member);
     }
 
     @Override
-    public void updateMember(Member member) {
-        memberDao.save(member);
+    public UserMember findMemberById(Integer id) {
+
+        return userMemberRepository.findById(id);
     }
 
     @Override
-    public Member findMember(Integer id) {
-        return memberDao.findOne(id);
+    public UserMember findMemberByName(String name) {
+
+        return userMemberRepository.findByName(name);
     }
 
     @Override
-    public List<Member> findAllMember() {
-        return memberDao.findAll();
+    public List<UserMember> findAllMember() {
+        return userMemberRepository.findAll();
     }
 }

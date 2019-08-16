@@ -25,8 +25,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         //HttpSecurity对象
         httpSecurity
+                //禁用 CSRF,不然post调试的时候都403
+                .csrf().disable()
                 //设置权限定义哪些URL需要被保护、哪些不需要被保护。HttpSecurity对象的方法
                 .authorizeRequests()
+                //调试期间先允许访问
+                .antMatchers("/member/**").permitAll()
                 //认证通过后任何请求都可访问。AbstractRequestMatcherRegistry的方法
                 .anyRequest().authenticated()
                 //连接HttpSecurity其他配置方法

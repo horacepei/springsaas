@@ -1,6 +1,7 @@
 package com.springboot.action.saas.modules.user.service;
 
 import com.springboot.action.saas.modules.user.domain.UserMember;
+import com.springboot.action.saas.modules.user.dto.UserDto;
 
 import java.util.List;
 /*
@@ -8,13 +9,13 @@ import java.util.List;
 * */
 public interface MemberService {
     //增加用户
-    public Long addMember(UserMember member);
+    public Long addMember(UserDto member);
     //更新用户信息
-    public void updateMember(UserMember member);
+    public void updateMember(UserDto member);
     //通过ID获取用户信息
-    public UserMember findMemberById(Integer id);
+    public UserDto findMemberById(Long id);
     //通过用户名称获取用户信息
-    public UserMember findMemberByName(String name);
+    public UserDto findMemberByName(String name);
     //获取用户信息列表，带有分页功能
-    public List<UserMember> findAllMember();
+    public List<UserDto> findAllMember();
 }

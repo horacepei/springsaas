@@ -1,12 +1,15 @@
 package com.springboot.action.saas.modules.user.service.impl;
 
 import com.springboot.action.saas.modules.user.domain.UserMember;
+import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.repository.UserMemberRepository;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /*
  * 业务接口是实现
@@ -16,37 +19,74 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private UserMemberRepository userMemberRepository;
     @Override
-    public Long addMember(UserMember member) {
+    public Long addMember(UserDto member) {
         //检查用户名是否已经存在
         if(userMemberRepository.findByName(member.getName()) != null){
             //走存在处理分支
             return -1L;
         }
+        UserMember userMember = new UserMember();
+        //用户姓名
+        userMember.setName(member.getName());
         //加密密码
+        userMember.setPassWord(member.getPassword());
         //加入到数据库
-        userMemberRepository.saveAndFlush(member);
-        return member.getId();
+        userMemberRepository.saveAndFlush(userMember);
+        return userMember.getId();
     }
 
     @Override
-    public void updateMember(UserMember member) {
-        userMemberRepository.saveAndFlush(member);
+    public UserDto findMemberById(Long id) {
+        UserDto userDto = new UserDto();
+        Optional<UserMember> userMemberOptional = userMemberRepository.findById(id);
+
+        if(!userMemberOptional.isPresent()){
+            //用户存在，走不存在处理
+            return userDto;
+        }
+
+        UserMember userMember = userMemberOptional.get();
+
+        userDto.setName(userMember.getName());
+        userDto.setPassword(userMember.getPassWord());
+
+        return userDto;
     }
 
     @Override
-    public UserMember findMemberById(Integer id) {
+    public UserDto findMemberByName(String name) {
 
-        return userMemberRepository.findById(id);
+        UserMember userMember = userMemberRepository.findByName(name);
+
+        UserDto userDto = new UserDto();
+        userDto.setName(userMember.getName());
+        userDto.setPassword(userMember.getPassWord());
+
+        return userDto;
     }
 
     @Override
-    public UserMember findMemberByName(String name) {
+    public List<UserDto> findAllMember() {
+        List<UserMember> userMemberList =  userMemberRepository.findAll();
+        List<UserDto> userDtoList = new ArrayList<>();;
+        for (int i = 0; i < userMemberList.size(); i++) {
+            UserMember userMember = (UserMember) userMemberList.get(i);
 
-        return userMemberRepository.findByName(name);
+            UserDto userDto = new UserDto();
+            userDto.setName(userMember.getName());
+            userDto.setPassword(userMember.getPassWord());
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 
     @Override
-    public List<UserMember> findAllMember() {
-        return userMemberRepository.findAll();
+    public void updateMember(UserDto member) {
+        UserMember userMember = new UserMember();
+        //加密密码
+        userMember.setPassWord(member.getPassword());
+
+        userMemberRepository.saveAndFlush(userMember);
     }
 }

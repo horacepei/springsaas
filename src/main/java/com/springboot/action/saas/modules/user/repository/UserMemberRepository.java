@@ -19,9 +19,6 @@ import java.util.Date;
  * */
 @Repository
 public interface UserMemberRepository extends JpaRepository<UserMember, Long> {
-    //通过id查找用户
-    UserMember findById(Integer id);
-
     //通过name查找用户
     UserMember findByName(String name);
 

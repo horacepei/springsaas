@@ -2,6 +2,7 @@ package com.springboot.action.saas.modules.user.controller;
 
 import com.springboot.action.saas.common.logging.annotation.Log;
 import com.springboot.action.saas.modules.user.domain.UserMember;
+import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +28,7 @@ public class MemberController {
      */
     @Log("获取全部用户列表")
     @RequestMapping(value = "/v1/findAll")
-    public List<UserMember> findAllMember() {
+    public List<UserDto> findAllMember() {
         return memberService.findAllMember();
     }
 
@@ -40,7 +41,7 @@ public class MemberController {
 
     // == @RequestMapping(value = "/v1/findById/{id}", method = RequestMethod.GET)
     @GetMapping("/v1/findById/{id}")
-    public UserMember findById(@PathVariable("id") Integer id) {
+    public UserDto findById(@PathVariable("id") Long id) {
         return memberService.findMemberById(id);
     }
 
@@ -53,7 +54,7 @@ public class MemberController {
 
     // == @RequestMapping(value = "/v1/findByName/{name}", method = RequestMethod.GET)
     @GetMapping("/v1/findByName/{name}")
-    public UserMember findByName(@PathVariable("name") String name) {
+    public UserDto findByName(@PathVariable("name") String name) {
         return memberService.findMemberByName(name);
     }
 
@@ -67,8 +68,10 @@ public class MemberController {
     // == @RequestMapping(value="/v1/add", method = RequestMethod.POST)
     @Log("增加用户")
     @PostMapping("/v1/add")
-    public void addMember(@Validated @RequestBody UserMember member) {
+    public void addMember(@Validated @RequestBody UserDto member) {
         System.out.println(member);
+        //参数检测
+        //添加用户
         memberService.addMember(member);
     }
 
@@ -82,7 +85,7 @@ public class MemberController {
      */
     // == @RequestMapping(value="/v1/update", method = RequestMethod.PUT)
     @PutMapping("/v1/update")
-    public void updateMember(@Validated @RequestBody UserMember member) {
+    public void updateMember(@Validated @RequestBody UserDto member) {
         memberService.updateMember(member);
     }
 }

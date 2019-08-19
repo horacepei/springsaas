@@ -28,7 +28,7 @@ public class UserMember implements Serializable {
     private String name;
     //密码，不能为空, 长度为64
     @NotBlank
-    @Column(name = "password", length = 64)
+    @Column(name = "password", length = 128)
     private String passWord;
 
     @Override

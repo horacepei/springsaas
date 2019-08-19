@@ -1,4 +1,4 @@
-package com.springboot.action.saas.modules.security.service;
+package com.springboot.action.saas.modules.repository;
 
 import com.springboot.action.saas.common.logging.domain.Log;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -5,6 +5,7 @@ import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.repository.UserMemberRepository;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class MemberServiceImpl implements MemberService {
         //用户姓名
         userMember.setName(member.getName());
         //加密密码
-        userMember.setPassWord(member.getPassword());
+        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+        userMember.setPassWord(encode.encode(member.getPassword()));
         //加入到数据库
         userMemberRepository.saveAndFlush(userMember);
         return userMember.getId();

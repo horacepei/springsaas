@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDetailsDto implements UserDetails {
 
+    //在json序列化时将java bean中的一些属性忽略掉
     @JsonIgnore
     private final Long id;
 
@@ -34,7 +35,7 @@ public class UserDetailsDto implements UserDetails {
     private Timestamp createTime;
 
     @JsonIgnore
-    private final Date lastPasswordResetDate;
+    private final Date passwordResetDate;
 
     @JsonIgnore
     @Override

@@ -4,12 +4,14 @@ import com.springboot.action.saas.modules.security.service.impl.UserDetailsServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -39,8 +41,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 //禁用 CSRF,不然post调试的时候都403
                 .csrf().disable()
+                // 由于使用jwt,不创建会话
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 //设置权限定义哪些URL需要被保护、哪些不需要被保护。HttpSecurity对象的方法
                 .authorizeRequests()
+                // 过滤请求,允许对网站静态资源的访问，无需授权
+                .antMatchers(
+                    HttpMethod.GET,
+                    "/*.html",
+                    "/favicon.ico",
+                    "/**/*.html",
+                    "/**/*.css",
+                    "/**/*.js"
+                ).permitAll()
+                //登陆页面，无需授权
+                .antMatchers(HttpMethod.POST, "/security/pwdlogin").permitAll()
                 //调试期间先允许访问
                 //.antMatchers("/member/**").permitAll()
                 //认证通过后任何请求都可访问。AbstractRequestMatcherRegistry的方法
@@ -66,7 +82,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * DaoAuthenticationProvider是SpringSecurity提供的AuthenticationProvider默认实现类
      * 授权方式提供者，判断授权有效性，用户有效性，在判断用户是否有效性，
      * 它依赖于UserDetailsService实例，可以自定义UserDetailsService的实现。
-     * 技巧01：
      *
      * @return
      */

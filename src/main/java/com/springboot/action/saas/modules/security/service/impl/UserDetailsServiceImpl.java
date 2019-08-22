@@ -1,5 +1,6 @@
 package com.springboot.action.saas.modules.security.service.impl;
 
+import com.springboot.action.saas.modules.security.dto.UserDetailsDto;
 import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //密码
         //角色list 当前版本先实现密码和帐号验证，先不增加角色控制，实际上要在角色list中增加增加new SimpleGrantedAuthority();
         Collection<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-        return new User(user.getName(), user.getPassword(), authList);
+        return new UserDetailsDto(
+                user.getId(),
+                user.getName(),
+                user.getPassword(),
+                user.getEnabled(),
+                user.getCreateTime(),
+                user.getPasswordResetDate(),
+                authList);
     }
 }

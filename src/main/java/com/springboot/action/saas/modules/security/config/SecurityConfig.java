@@ -1,5 +1,6 @@
 package com.springboot.action.saas.modules.security.config;
 
+import com.springboot.action.saas.modules.security.filter.JwtAuthorizationFilter;
 import com.springboot.action.saas.modules.security.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 //定义配置类被注解的类内部包含有一个或多个被@Bean注解的方法，这些方法将会被
 //AnnotationConfigApplicationContext或AnnotationConfigWebApplicationContext类进行扫描，
@@ -31,7 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //实现UserDetailService接口用来做登录认证
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
-
+    //自定义基于JWT的安全过滤器，bean
+    @Autowired
+    JwtAuthorizationFilter authenticationFilter;
     /*
      * 配置http服务，路径拦截、csrf保护等等均可通过此方法配置
      * */
@@ -39,12 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         //HttpSecurity对象
         httpSecurity
-                //禁用 CSRF,不然post调试的时候都403
+                // 禁用 CSRF,不然post调试的时候都403
                 .csrf().disable()
                 // 由于使用jwt,不创建会话
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //设置权限定义哪些URL需要被保护、哪些不需要被保护。HttpSecurity对象的方法
+                // 设置权限定义哪些URL需要被保护、哪些不需要被保护。HttpSecurity对象的方法
                 .authorizeRequests()
                 // 过滤请求,允许对网站静态资源的访问，无需授权
                 .antMatchers(
@@ -55,18 +59,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/**/*.css",
                     "/**/*.js"
                 ).permitAll()
-                //登陆页面，无需授权
+                // 登陆页面，无需授权
                 .antMatchers(HttpMethod.POST, "/security/pwdlogin").permitAll()
-                //调试期间先允许访问
+                // 调试期间先允许访问
                 //.antMatchers("/member/**").permitAll()
-                //认证通过后任何请求都可访问。AbstractRequestMatcherRegistry的方法
+                // 认证通过后任何请求都可访问。AbstractRequestMatcherRegistry的方法
                 .anyRequest().authenticated()
-                //连接HttpSecurity其他配置方法
+                // 连接HttpSecurity其他配置方法
                 .and()
-                //生成默认登录页，HttpSecurity对象的方法
+                // 生成默认登录页，HttpSecurity对象的方法
                 .formLogin();
-    }
+        // 增加jwt filter
+        httpSecurity
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+    }
     /**
      * 设定PsswordEncoder为BeanBcrypt加密方式，后面在设定AuthenticationProvider需要用到
      *

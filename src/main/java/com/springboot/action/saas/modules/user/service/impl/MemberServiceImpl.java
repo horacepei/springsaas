@@ -1,11 +1,11 @@
 package com.springboot.action.saas.modules.user.service.impl;
 
+import com.springboot.action.saas.common.utils.EncryptionUtils;
 import com.springboot.action.saas.modules.user.domain.UserMember;
 import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.repository.UserMemberRepository;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Long addMember(UserDto member) {
         //检查用户名是否已经存在
-        if(userMemberRepository.findByName(member.getName()) != null){
+        if(null != userMemberRepository.findByName(member.getName())){
             //走存在处理分支
             return -1L;
         }
@@ -30,8 +30,7 @@ public class MemberServiceImpl implements MemberService {
         //用户姓名
         userMember.setName(member.getName());
         //加密密码
-        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-        userMember.setPassWord(encode.encode(member.getPassword()));
+        userMember.setPassWord(EncryptionUtils.encryptPassword(member.getPassword()));
         //加入到数据库
         userMemberRepository.saveAndFlush(userMember);
         return userMember.getId();
@@ -43,26 +42,36 @@ public class MemberServiceImpl implements MemberService {
         Optional<UserMember> userMemberOptional = userMemberRepository.findById(id);
 
         if(!userMemberOptional.isPresent()){
-            //用户存在，走不存在处理
-            return userDto;
+            //用户不存在，走不存在处理
+            return null;
         }
-
+        //domain to dto
         UserMember userMember = userMemberOptional.get();
-
+        userDto.setId(userMember.getId());
         userDto.setName(userMember.getName());
         userDto.setPassword(userMember.getPassWord());
+        userDto.setEnabled(userMember.getEnabled());
+        userDto.setCreateTime(userMember.getCreateTime());
+        userDto.setPasswordResetDate(userMember.getPasswordResetDate());
 
         return userDto;
     }
 
     @Override
     public UserDto findMemberByName(String name) {
-
         UserMember userMember = userMemberRepository.findByName(name);
-
+        if (null == userMember) {
+            //用户不存在，走不存在处理
+            return null;
+        }
+        //domain to dto
         UserDto userDto = new UserDto();
+        userDto.setId(userMember.getId());
         userDto.setName(userMember.getName());
         userDto.setPassword(userMember.getPassWord());
+        userDto.setEnabled(userMember.getEnabled());
+        userDto.setCreateTime(userMember.getCreateTime());
+        userDto.setPasswordResetDate(userMember.getPasswordResetDate());
 
         return userDto;
     }
@@ -73,10 +82,12 @@ public class MemberServiceImpl implements MemberService {
         List<UserDto> userDtoList = new ArrayList<>();;
         for (int i = 0; i < userMemberList.size(); i++) {
             UserMember userMember = (UserMember) userMemberList.get(i);
-
+            //domain to dto
             UserDto userDto = new UserDto();
+            userDto.setId(userMember.getId());
             userDto.setName(userMember.getName());
-            userDto.setPassword(userMember.getPassWord());
+            userDto.setEnabled(userMember.getEnabled());
+            userDto.setCreateTime(userMember.getCreateTime());
 
             userDtoList.add(userDto);
         }

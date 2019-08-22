@@ -8,9 +8,9 @@ import java.io.Serializable;
 @Data
 public class LoginInfoDto implements Serializable {
 
-    private final String token;
+    private String token;
 
-    private final UserDetailsDto user;
+    private UserDetailsDto user;
 
     public LoginInfoDto(String token, UserDetailsDto user) {
         this.token = token;

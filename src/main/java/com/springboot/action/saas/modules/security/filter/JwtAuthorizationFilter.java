@@ -78,7 +78,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             UserDetailsDto userDetailsDto = (UserDetailsDto)this.userDetailsService.loadUserByUsername(username);
             //判定token是否合法，不合法走异常处理exceptionHandling().authenticationEntryPoint
             if (jwtUtil.validateToken(token, userDetailsDto)) {
-                //合法，创建带用户名和密码以及权限的Authentication
+                //合法，创建带用户名和密码以及权限的Authentication,这里实例化UsernamePasswordAuthenticationToken
+                //构造函数内实际上已经设置为认证通过super.setAuthenticated(true);
                 //构造函数3个参数：
                 // 用户信息（身份认证信息，还有其他外带信息都可以增加）
                 // 用户密码（于证明principal是正确的信息，比如密码）

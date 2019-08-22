@@ -1,6 +1,7 @@
 package com.springboot.action.saas.modules.security.controller;
 
 import com.springboot.action.saas.common.logging.annotation.Log;
+import com.springboot.action.saas.common.utils.EncryptionUtils;
 import com.springboot.action.saas.modules.security.dto.LoginInfoDto;
 import com.springboot.action.saas.modules.security.dto.LoginPwdDto;
 import com.springboot.action.saas.modules.security.dto.UserDetailsDto;
@@ -9,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 /*
@@ -39,22 +40,27 @@ public class SecurityController {
     @Log("帐号登陆")
     @PostMapping(value = "/pwdlogin")
     public LoginInfoDto pwdlgoin(@Validated @RequestBody LoginPwdDto loginPwdDto) {
-        //获取用户认证信息
-        final UserDetailsDto userDetailsDto = (UserDetailsDto)userDetailsService.loadUserByUsername(loginPwdDto.getUsername());
-        //判定密码是否正确
-        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-        if (!userDetailsDto.getPassword().equals(encode.encode(loginPwdDto.getPassword()))) {
-            //密码错误处理，抛异常
-            throw new AccountExpiredException("密码错误");
+        try {
+            //获取用户认证信息
+            final UserDetailsDto userDetailsDto = (UserDetailsDto)userDetailsService.loadUserByUsername(loginPwdDto.getUsername());
+            //判定密码是否正确
+            final String userPassword = EncryptionUtils.encryptPassword(loginPwdDto.getPassword());
+            if (!userDetailsDto.getPassword().equals(userPassword)) {
+                //密码错误处理，抛异常
+                throw new AccountExpiredException("密码错误");
+            }
+            //判定用户是否启动
+            if (!userDetailsDto.isEnabled()) {
+                //处理帐号禁用，抛异常
+                throw new AccountExpiredException("帐号被禁用");
+            }
+            //生成token
+            String token = jwtUtil.generateToken(userDetailsDto);
+            //返回认证信息对象
+            return new LoginInfoDto(token, userDetailsDto);
+        } catch (EntityNotFoundException e) {
+                //检查用户名是否存在
+                throw new AccountExpiredException("用户不存在");
         }
-        //判定用户是否启动
-        if (!userDetailsDto.isEnabled()) {
-            //处理帐号禁用，抛异常
-            throw new AccountExpiredException("帐号被禁用");
-        }
-        //生成token
-        String token = jwtUtil.generateToken(userDetailsDto);
-        //返回认证信息对象
-        return new LoginInfoDto(token, userDetailsDto);
     }
 }

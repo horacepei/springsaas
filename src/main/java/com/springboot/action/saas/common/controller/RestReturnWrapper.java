@@ -80,6 +80,7 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
                     return body;
                 }else{
                     //情况6 非字符串非统一格式的返回，需要统一格式
+                    //需要判定是否是抛出的异常返回（统一到错误输出）
                     RestReturn restReturn = new RestReturn();
                     return restReturn.success(body, "");
                 }

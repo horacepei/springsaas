@@ -158,11 +158,13 @@ public class JwtUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         //获取token中的签发时间
         final Date created = getIssuedAtDateFromToken(token);
+        //获取用户重置密码时间
+        Date lastPasswordReset = new Date(user.getPasswordResetDate());
         //判定token：用户是否合法，是否超期，判定是否
         return (
                 username.equals(user.getUsername())
                         && !isTokenExpired(token)
-                        && !isCreatedBeforeLastPasswordReset(created, user.getPasswordResetDate())
+                        && !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
         );
     }
 

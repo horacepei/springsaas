@@ -1,6 +1,6 @@
 package com.springboot.action.saas.common.exception;
 
-import org.springframework.util.StringUtils;
+        import org.springframework.util.StringUtils;
 
 public class EntityNotFoundException extends RuntimeException {
 

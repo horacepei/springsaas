@@ -1,6 +1,6 @@
-package com.springboot.action.saas.modules.repository;
+package com.springboot.action.saas.modules.system.repository;
 
-import com.springboot.action.saas.common.logging.domain.Log;
+import com.springboot.action.saas.modules.system.domain.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +14,5 @@ import org.springframework.stereotype.Repository;
  * ID id的数据类型
  * */
 @Repository
-public interface RoleRepository extends JpaRepository<Log,Long> {
+public interface MenuRepository extends JpaRepository<Menu, Long> {
 }

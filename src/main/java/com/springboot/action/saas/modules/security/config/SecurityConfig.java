@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         //HttpSecurity对象
         httpSecurity
-                // 禁用 CSRF,不然post调试的时候都403
+                // 禁用 CSRF,不然post调试的时候都403，CSRF和RESTful技术有冲突。CSRF默认支持的方法： GET|HEAD|TRACE|OPTIONS，不支持POST
                 .csrf().disable()
                 // 由于使用jwt,不创建会话
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,11 +1,9 @@
-package com.springboot.action.saas.modules.security.domain;
+package com.springboot.action.saas.modules.system.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 /*
 * 角色数据表实体类

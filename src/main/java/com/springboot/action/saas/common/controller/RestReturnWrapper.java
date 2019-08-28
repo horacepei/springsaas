@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
     /**
      * 判定哪些请求要执行beforeBodyWrite，返回true执行，返回false不执行
-     * */
+     */
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> converterType) {
         //获取当前处理请求的controller的方法
@@ -34,19 +34,18 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
      * @param httpMessageConverter
      * @param serverHttpRequest
      * @param serverHttpResponse
-     *
      * @return
-     * */
+     */
     @Override
     public Object beforeBodyWrite(Object body,
-                    MethodParameter methodParameter,
-                    MediaType mediaType,
-                    Class<? extends HttpMessageConverter<?>> httpMessageConverter,
-                    ServerHttpRequest serverHttpRequest,
-                    ServerHttpResponse serverHttpResponse) {
+                                  MethodParameter methodParameter,
+                                  MediaType mediaType,
+                                  Class<? extends HttpMessageConverter<?>> httpMessageConverter,
+                                  ServerHttpRequest serverHttpRequest,
+                                  ServerHttpResponse serverHttpResponse) {
         //具体返回值处理
         //情况1 如果返回的body为null
-        if(body == null){
+        if (body == null) {
             if (mediaType == MediaType.APPLICATION_JSON) {
                 //返回是json个格式类型，无body内容
                 RestReturn restReturn = new RestReturn();
@@ -75,10 +74,10 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
                 }
             } else {
                 //返回的是非字符串格式，实际上很多时候用都是是在应用程返回的对象居多
-                if(body instanceof RestReturn){
+                if (body instanceof RestReturn) {
                     //情况5 如果已经封装成RestReturn,直接return
                     return body;
-                }else{
+                } else {
                     //情况6 非字符串非统一格式的返回，需要统一格式
                     //需要判定是否是抛出的异常返回（统一到错误输出）
                     RestReturn restReturn = new RestReturn();
@@ -87,5 +86,4 @@ public class RestReturnWrapper implements ResponseBodyAdvice<Object> {
             }
         }
     }
-
 }

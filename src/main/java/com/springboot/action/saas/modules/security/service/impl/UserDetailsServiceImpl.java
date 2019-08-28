@@ -39,12 +39,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
-    /*
+    /* *
      *  封装认证需要的UserDetails该用户的用户名、密码、角色
      * */
     public UserDetails createUser(UserDto user) {
-        //用户名
-        //密码
         //角色list 当前版本先实现密码和帐号验证，先不增加角色控制，实际上要在角色list中增加增加new SimpleGrantedAuthority();
         Collection<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
         return new UserDetailsDto(

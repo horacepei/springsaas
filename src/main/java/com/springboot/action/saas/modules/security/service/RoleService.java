@@ -1,6 +1,6 @@
 package com.springboot.action.saas.modules.security.service;
 
-import com.springboot.action.saas.modules.security.domain.Role;
+import com.springboot.action.saas.modules.system.domain.Role;
 
 import java.util.List;
 

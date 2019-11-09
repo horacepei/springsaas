@@ -1,11 +1,11 @@
 package com.springboot.action.saas.modules.user.service.impl;
 
-import com.springboot.action.saas.common.utils.EncryptionUtils;
 import com.springboot.action.saas.modules.user.domain.UserMember;
 import com.springboot.action.saas.modules.user.dto.UserDto;
 import com.springboot.action.saas.modules.user.repository.UserMemberRepository;
 import com.springboot.action.saas.modules.user.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,7 +30,10 @@ public class MemberServiceImpl implements MemberService {
         //用户姓名
         userMember.setName(member.getName());
         //加密密码
-        userMember.setPassWord(EncryptionUtils.encryptPassword(member.getPassword()));
+        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+        userMember.setPassWord(encode.encode(member.getPassword()));
+        //设置创建时间
+        userMember.setCreateTime(System.currentTimeMillis());
         //加入到数据库
         userMemberRepository.saveAndFlush(userMember);
         return userMember.getId();
@@ -98,8 +101,11 @@ public class MemberServiceImpl implements MemberService {
     public void updateMember(UserDto member) {
         UserMember userMember = new UserMember();
         //加密密码
+        userMember.setId(member.getId());
+        userMember.setName(member.getName());
         userMember.setPassWord(member.getPassword());
-
+        userMember.setEnabled(member.getEnabled());
+        userMember.setCreateTime(member.getCreateTime());
         userMemberRepository.saveAndFlush(userMember);
     }
 }

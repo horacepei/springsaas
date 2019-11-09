@@ -42,7 +42,8 @@ public class SecurityController {
     public LoginInfoDto pwdlgoin(@Validated @RequestBody LoginPwdDto loginPwdDto) {
         try {
             //获取用户认证信息
-            final UserDetailsDto userDetailsDto = (UserDetailsDto)userDetailsService.loadUserByUsername(loginPwdDto.getUsername());
+            final UserDetailsDto userDetailsDto = (UserDetailsDto)userDetailsService.
+                    loadUserByUsername(loginPwdDto.getUsername());
             //判定密码是否正确
             final String userPassword = EncryptionUtils.encryptPassword(loginPwdDto.getPassword());
             if (!userDetailsDto.getPassword().equals(userPassword)) {
